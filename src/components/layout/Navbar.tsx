@@ -1,19 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState('HOME');
+  const linkRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
+  const [linkWidths, setLinkWidths] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // Calculate text widths on mount and resize
+    const calculateWidths = () => {
+      const widths: { [key: string]: number } = {};
+      navLinks.forEach((link) => {
+        const ref = linkRefs.current[link.name];
+        if (ref) {
+          widths[link.name] = ref.offsetWidth;
+        }
+      });
+      setLinkWidths(widths);
+    };
+
+    calculateWidths();
+    window.addEventListener('resize', calculateWidths);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', calculateWidths);
+    };
   }, []);
 
   const navLinks = [
@@ -32,7 +53,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4">
         {/* Pill Container */}
-        <div className="relative flex items-center w-full max-w-4xl mx-auto bg-[#111111]/90 backdrop-blur-xl rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] px-2 py-2">
+        <div className="relative flex items-center w-full max-w-4xl mx-auto bg-black backdrop-blur-xl rounded-full border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.08),0_8px_32px_rgba(0,0,0,0.8)] px-2 py-2">
           
           {/* 1. Logo Section (Left) */}
           <div className="flex-shrink-0 w-24 flex items-center justify-center pl-6">
@@ -52,24 +73,32 @@ const Navbar = () => {
             <div className="flex items-center">
               {navLinks.map((link) => {
                 const isActive = activeLink === link.name;
+                const textWidth = linkWidths[link.name] || 0;
+                
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
-                    // Only triggers on click, removed onMouseEnter so hover doesn't activate it
+                    ref={(el) => { linkRefs.current[link.name] = el; }}
                     onClick={() => setActiveLink(link.name)}
                     className="relative px-4 py-3 group"
                   >
-                    {/* THE EXACT SPOTLIGHT EFFECT (Active Only) */}
+                    {/* THE SPOTLIGHT EFFECT (Active Only) */}
                     {isActive && (
                       <>
-                        {/* 1. Thicker shining line at the top edge */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[3px] bg-white shadow-[0_0_15px_5px_rgba(255,255,255,0.9)] rounded-full" />
+                        {/* 1. Glowing line matching text width - WHITE */}
+                        <div 
+                          className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_20px_rgba(255,255,255,0.9)]"
+                          style={{ width: `${textWidth}px` }}
+                        />
                         
-                        {/* 2. Soft downward glow/beam */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-20 bg-gradient-to-b from-white/40 via-white/10 to-transparent blur-2xl rounded-full pointer-events-none -z-10" />
+                        {/* 2. Soft white downward glow */}
+                        <div 
+                          className="absolute top-0 left-1/2 -translate-x-1/2 h-20 bg-gradient-to-b from-white/35 via-white/10 to-transparent blur-2xl rounded-full pointer-events-none -z-10"
+                          style={{ width: `${textWidth + 20}px` }}
+                        />
                         
-                        {/* 3. Soft glow directly behind the text */}
+                        {/* 3. Soft glow behind text - WHITE */}
                         <div className="absolute inset-0 bg-white/15 blur-xl rounded-full -z-10" />
                       </>
                     )}

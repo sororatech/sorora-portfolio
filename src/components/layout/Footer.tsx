@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Send, Phone } from 'lucide-react';
+import { Send, Phone, Mail } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -29,6 +29,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         {/* Social Icons */}
         <div className="flex justify-end space-x-4 mb-12">
+          {/* Telegram */}
           <Link
             href="https://t.me/yourtelegram"
             target="_blank"
@@ -37,6 +38,8 @@ const Footer = () => {
           >
             <Send className="w-4 h-4 text-pink-500 group-hover:text-white transition-colors" />
           </Link>
+          
+          {/* WhatsApp */}
           <Link
             href="https://wa.me/yourwhatsappnumber"
             target="_blank"
@@ -44,6 +47,16 @@ const Footer = () => {
             className="w-10 h-10 rounded-full border border-pink-500/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-all duration-300 group"
           >
             <Phone className="w-4 h-4 text-pink-500 group-hover:text-white transition-colors" />
+          </Link>
+          
+          {/* Email */}
+          <Link
+            href="mailto:your@email.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 rounded-full border border-pink-500/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-all duration-300 group"
+          >
+            <Mail className="w-4 h-4 text-pink-500 group-hover:text-white transition-colors" />
           </Link>
         </div>
 
@@ -146,11 +159,11 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <span className="text-pink-500 font-bold text-lg">
-                SORORA_TECH
+                SORORA TECH
               </span>
             </div>
             <div className="text-gray-500 text-sm">
-              © {currentYear} SORORA_TECH
+              © {currentYear} SORORA TECH
             </div>
           </div>
         </div>
