@@ -10,10 +10,40 @@ const Navbar = () => {
   const linkRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
   const [linkWidths, setLinkWidths] = useState<{ [key: string]: number }>({});
 
+  // Map section IDs to nav link names
+  const sectionToLinkMap: { [key: string]: string } = {
+    'home': 'HOME',
+    'about': 'ABOUT US',
+    'projects': 'PROJECTS',
+    'services': 'SERVICES',
+    'contact': 'CONTACT US',
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      
+      // Detect which section is currently in view
+      const scrollPosition = window.scrollY + 300; // Offset for better detection
+
+      // Check sections in reverse order (bottom to top)
+      const sections = ['contact', 'services', 'projects', 'about', 'home'];
+      
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            const linkName = sectionToLinkMap[sectionId];
+            if (linkName) {
+              setActiveLink(linkName);
+            }
+            break;
+          }
+        }
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
     
     // Calculate text widths on mount and resize
@@ -31,6 +61,9 @@ const Navbar = () => {
     calculateWidths();
     window.addEventListener('resize', calculateWidths);
     
+    // Initial check
+    handleScroll();
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', calculateWidths);
@@ -38,11 +71,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'HOME', href: '#home' },
-    { name: 'ABOUT US', href: '#about' },
-    { name: 'PROJECTS', href: '#projects' },
-    { name: 'SERVICES', href: '#services' },
-    { name: 'CONTACT US', href: '#contact' },
+    { name: 'HOME', href: '/#home' },
+    { name: 'ABOUT US', href: '/#about' },
+    { name: 'PROJECTS', href: '/#projects' },
+    { name: 'SERVICES', href: '/#services' },
+    { name: 'CONTACT US', href: '/#contact' },
   ];
 
   return (
@@ -57,7 +90,7 @@ const Navbar = () => {
           
           {/* 1. Logo Section (Left) */}
           <div className="flex-shrink-0 w-24 flex items-center justify-center pl-6">
-            <Link href="#home">
+            <Link href="/#home">
               <Image 
                 src="/sorora-logo.png" 
                 alt="Sorora Logo" 
