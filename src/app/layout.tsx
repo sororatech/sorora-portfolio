@@ -22,10 +22,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${nunito.variable} h-full antialiased`}>
-      <body className="minz-h-full flex flex-col font-sans bg-background text-foreground">
+    // Adding suppressHydrationWarning to the html tag helps silence 
+    // errors for elements deep inside the tree.
+    <html lang="en" className={`${nunito.variable} h-full antialiased`} suppressHydrationWarning={true}>
+      <body 
+        className="min-h-full flex flex-col font-sans bg-background text-foreground"
+        suppressHydrationWarning={true}
+      >
         {children}
-            </body>
+      </body>
     </html>
   );
 }
