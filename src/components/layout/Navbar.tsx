@@ -1,8 +1,10 @@
 'use client';
 
+
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -10,12 +12,13 @@ const Navbar = () => {
   const linkRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
   const [linkWidths, setLinkWidths] = useState<{ [key: string]: number }>({});
 
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
-    
+   
     // Calculate text widths on mount and resize
     const calculateWidths = () => {
       const widths: { [key: string]: number } = {};
@@ -28,14 +31,16 @@ const Navbar = () => {
       setLinkWidths(widths);
     };
 
+
     calculateWidths();
     window.addEventListener('resize', calculateWidths);
-    
+   
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', calculateWidths);
     };
   }, []);
+
 
   const navLinks = [
     { name: 'HOME', href: '#home' },
@@ -44,6 +49,7 @@ const Navbar = () => {
     { name: 'SERVICES', href: '#services' },
     { name: 'CONTACT US', href: '#contact' },
   ];
+
 
   return (
     <nav
@@ -54,19 +60,20 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         {/* Pill Container */}
         <div className="relative flex items-center w-full max-w-4xl mx-auto bg-black backdrop-blur-xl rounded-full border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.08),0_8px_32px_rgba(0,0,0,0.8)] px-2 py-2">
-          
+         
           {/* 1. Logo Section (Left) */}
           <div className="flex-shrink-0 w-24 flex items-center justify-center pl-6">
             <Link href="#home">
-              <Image 
-                src="/sorora-logo.png" 
-                alt="Sorora Logo" 
-                width={36} 
-                height={36} 
+              <Image
+                src="/sorora-logo.png"
+                alt="Sorora Logo"
+                width={36}
+                height={36}
                 className="object-contain"
               />
             </Link>
           </div>
+
 
           {/* 2. Navigation Links (Perfectly Centered) */}
           <div className="flex-1 flex justify-center items-center">
@@ -74,7 +81,7 @@ const Navbar = () => {
               {navLinks.map((link) => {
                 const isActive = activeLink === link.name;
                 const textWidth = linkWidths[link.name] || 0;
-                
+               
                 return (
                   <Link
                     key={link.name}
@@ -87,21 +94,22 @@ const Navbar = () => {
                     {isActive && (
                       <>
                         {/* 1. Glowing line matching text width - WHITE */}
-                        <div 
+                        <div
                           className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_20px_rgba(255,255,255,0.9)]"
                           style={{ width: `${textWidth}px` }}
                         />
-                        
+                       
                         {/* 2. Soft white downward glow */}
-                        <div 
+                        <div
                           className="absolute top-0 left-1/2 -translate-x-1/2 h-20 bg-gradient-to-b from-white/35 via-white/10 to-transparent blur-2xl rounded-full pointer-events-none -z-10"
                           style={{ width: `${textWidth + 20}px` }}
                         />
-                        
+                       
                         {/* 3. Soft glow behind text - WHITE */}
                         <div className="absolute inset-0 bg-white/15 blur-xl rounded-full -z-10" />
                       </>
                     )}
+
 
                     {/* Link Text */}
                     <span
@@ -117,6 +125,7 @@ const Navbar = () => {
             </div>
           </div>
 
+
           {/* 3. Spacer (Right) */}
           <div className="flex-shrink-0 w-24" />
         </div>
@@ -125,4 +134,6 @@ const Navbar = () => {
   );
 };
 
+
 export default Navbar;
+
