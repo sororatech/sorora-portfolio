@@ -23,7 +23,7 @@ export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
-    const initialParticles = Array.from({ length: 40 }, (_, i) => ({
+    const initialParticles = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
       y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
@@ -64,7 +64,7 @@ export default function Contact() {
               y1={particles[i].y}
               x2={particles[j].x}
               y2={particles[j].y}
-              stroke="rgba(236, 72, 153, 0.1)"
+              stroke="rgba(255, 255, 255, 0.08)"
               strokeWidth="0.5"
             />
           );
@@ -126,7 +126,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0a0a0a] py-24 px-4">
-      {/* Animated Particle Background */}
+      {/* Animated Particle Background - NOW WHITE */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
         {getLines()}
         {particles.map(particle => (
@@ -135,7 +135,7 @@ export default function Contact() {
             cx={particle.x}
             cy={particle.y}
             r="1.5"
-            fill="rgba(236, 72, 153, 0.4)"
+            fill="rgba(255, 255, 255, 0.6)"
           />
         ))}
       </svg>
@@ -271,7 +271,7 @@ export default function Contact() {
                   <motion.p
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-green-400 text-sm text-center bg-green-400/10 py-3 px-4 rounded-lg border border-green-400/20"
+                    className="text-white-400 text-sm text-center bg-white-400/10 py-3 px-4 rounded-lg border border-white-400/20"
                   >
                     Thank you! Your message has been sent to Sorora Tech. We'll get back to you soon.
                   </motion.p>

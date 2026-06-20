@@ -17,7 +17,7 @@ export default function Hero() {
   }>>([]);
 
   useEffect(() => {
-    const initialParticles = Array.from({ length: 50 }, (_, i) => ({
+    const initialParticles = Array.from({ length: 70 }, (_, i) => ({
       id: i,
       x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
       y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
@@ -87,7 +87,7 @@ export default function Hero() {
   return (
     <AnimatePresence mode="wait">
       {showIntro && (
-        <motion.div 
+        <motion.div
           key="splash"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -112,13 +112,13 @@ export default function Hero() {
           <div className="relative z-10 flex items-center">
             <motion.div
               initial={{ x: 0, opacity: 0 }}
-              animate={showLogoText ? { x: -10, opacity: 1 } : { x: 0, opacity: 1 }}
+              animate={showLogoText ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
               transition={{ duration: 1, ease: "easeInOut" }}
             >
-              <Image 
-                src="/logo.png" 
-                alt="Sorora Logo" 
-                width={320} 
+              <Image
+                src="/logo.png"
+                alt="Sorora Logo"
+                width={320}
                 height={320}
                 className="object-contain"
               />
@@ -128,7 +128,7 @@ export default function Hero() {
               initial={{ opacity: 0, x: 0, maxWidth: 0 }}
               animate={showLogoText ? { opacity: 1, x: 0, maxWidth: 600 } : { opacity: 0, x: 0, maxWidth: 0 }}
               transition={{ duration: 1, delay: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden whitespace-nowrap"
+              className="overflow-hidden whitespace-nowrap -ml-16"
             >
               <span className="text-7xl md:text-8xl font-light text-white tracking-tight">
                 Sorora Tech
@@ -147,22 +147,22 @@ export default function Hero() {
           transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 bg-[#0a0a0a] pt-24"
         >
-          {/* Colored Particle Network for Hero Background */}
+          {/* White Particle Network for Hero Background - NOW WHITE */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            {getLines("rgba(168, 85, 247, 0.15)")}
+            {getLines("rgba(255, 255, 255, 0.08)")}
             {particles.map(particle => (
               <circle
                 key={particle.id}
                 cx={particle.x}
                 cy={particle.y}
                 r="1.5"
-                fill="rgba(236, 72, 153, 0.5)"
+                fill="rgba(255, 255, 255, 0.6)"
               />
             ))}
           </svg>
 
           <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-            
+
             {/* Left Content */}
             <div className="space-y-6 z-10 text-center lg:text-left">
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
@@ -176,8 +176,8 @@ export default function Hero() {
                 <span className="text-white block">together.</span>
               </h1>
               <p className="text-gray-400 text-lg max-w-lg leading-relaxed mx-auto lg:mx-0">
-                A collaborative team of software engineers crafting intelligent, 
-                scalable and meaningful digital solutions. From terminal-level 
+                A collaborative team of software engineers crafting intelligent,
+                scalable and meaningful digital solutions. From terminal-level
                 architecture to immersive front-end experiences.
               </p>
             </div>
@@ -196,16 +196,16 @@ export default function Hero() {
 function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon: any; angle: number; radius: number }> }) {
   return (
     <div className="relative w-[500px] h-[500px] md:w-[540px] md:h-[540px]">
-      
+
       {/* Subtle Background Glow */}
       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-purple-500/5 blur-2xl" />
-      
+
       {/* Outer Orbital Ring */}
       <div className="absolute inset-0 rounded-full border border-purple-500/10" />
-      
+
       {/* Middle Orbital Ring */}
       <div className="absolute inset-12 rounded-full border border-purple-500/8" />
-      
+
       {/* Inner Orbital Ring */}
       <div className="absolute inset-24 rounded-full border border-purple-500/6" />
 
@@ -220,7 +220,7 @@ function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon:
           const radians = (item.angle * Math.PI) / 180;
           const x = Math.cos(radians) * item.radius;
           const y = Math.sin(radians) * item.radius;
-          
+
           return (
             <div
               key={item.name}
@@ -256,17 +256,17 @@ function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon:
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {/* Outer glow ring */}
         <div className="absolute inset-[-50px] rounded-full bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 blur-xl" />
-        
+
         {/* Middle glow ring */}
         <div className="absolute inset-[-35px] rounded-full border border-purple-400/15" />
-        
+
         {/* Inner glow circle */}
         <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-purple-600/20 via-pink-500/10 to-purple-600/20 border border-purple-400/20 flex items-center justify-center backdrop-blur-sm">
-          <Image 
-            src="/light.png" 
-            alt="Sorora Center Logo" 
-            width={70} 
-            height={70} 
+          <Image
+            src="/light.png"
+            alt="Sorora Center Logo"
+            width={70}
+            height={70}
             className="object-contain"
           />
         </div>

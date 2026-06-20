@@ -31,7 +31,7 @@ const Footer = () => {
         <div className="flex justify-end space-x-4 mb-12">
           {/* Telegram */}
           <Link
-            href="https://t.me/yourtelegram"
+            href="https://t.me/sororatech"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 rounded-full border border-pink-500/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-all duration-300 group"
@@ -41,7 +41,7 @@ const Footer = () => {
           
           {/* WhatsApp */}
           <Link
-            href="https://wa.me/yourwhatsappnumber"
+            href="https://wa.me/251994941164"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 rounded-full border border-pink-500/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-all duration-300 group"
@@ -51,7 +51,7 @@ const Footer = () => {
           
           {/* Email */}
           <Link
-            href="mailto:your@email.com"
+            href="mailto:sororatech@gmail.com"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 rounded-full border border-pink-500/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-all duration-300 group"
