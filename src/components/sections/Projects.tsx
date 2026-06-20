@@ -54,9 +54,8 @@ export default function Projects() {
     { id: 'p1', number: '01', logoSrc: '/servia.png', videoSrc: '/videos/video1.mp4', title: 'SERVIA', description: 'A trusted global bridge empowering Africans and the diaspora to access real estate education, connect with verified professionals, and build generational wealth.' },
     { id: 'p2', number: '02', logoSrc: '/afrinest.png', videoSrc: '/videos/video2.mp4', title: 'AFRINEST GLOBAL', description: 'Empowering Africans and the diaspora through real estate education and verified professional networks, serving as a trusted global bridge to build generational wealth.' },
     { id: 'p3', number: '03', logoSrc: '/chisitra.png', videoSrc: '/videos/video3.mp4', title: 'EAVI', description: ' EAVI a comprehensive Learning Management System (LMS) designed to bridge the gap between instructors and learners.' },
-    { id: 'p4', number: '04', logoSrc: '/sorora-logo.png', videoSrc: '/videos/video4.mp4', title: 'LINEA VOL.4', description: 'Chisitra AI is a next-generation intelligence engine.' },
-    { id: 'p5', number: '05', logoSrc: '/Bet.jpeg', videoSrc: '/videos/video5.mp4', title: 'PROJECT FIVE', description: 'BetAman ("Home Trust") uses AI-powered scam detection, Solana escrow, and on-chain reputation to stop rental fraud in Ethiopia.' },
-    { id: 'p6', number: '06', logoSrc: '/well.jpeg', videoSrc: '/videos/video6.mp4', title: 'PROJECT SIX', description: 'RoamWell is an AI-powered interactive health map for Ethiopia that delivers personalized, region-specific wellness guidance and real-time health alerts to keep users safe anywhere in the country.' },
+    { id: 'p4', number: '04', logoSrc: '/Bet.jpeg', videoSrc: '/videos/video4.mp4', title: 'BetAman', description: 'BetAman ("Home Trust") uses AI-powered scam detection, Solana escrow, and on-chain reputation to stop rental fraud in Ethiopia.' },
+    { id: 'p5', number: '05', logoSrc: '/well.jpeg', videoSrc: '/videos/video5.mp4', title: 'RoamWell AI', description: 'RoamWell is an AI-powered interactive health map for Ethiopia that delivers personalized, region-specific wellness guidance and real-time health alerts to keep users safe anywhere in the country.' },
   ];
 
 
