@@ -46,7 +46,7 @@ export default function Projects() {
   }, [isPaused]);
 
   const projects: Project[] = [
-    { id: 'p1', number: '01', logoSrc: '/servia.png', videoSrc: '/videos/video1.mp4', title: 'SERVIA', description: 'A trusted global bridge empowering Africans and the diaspora to access real estate education, connect with verified professionals, and build generational wealth.' },
+    { id: 'p1', number: '01', logoSrc: '/servia.png', videoSrc: '/videos/video1.mp4', title: 'SERVIA', description: 'Servia AI is an all-in-one recruitment platform that accelerates hiring through intelligent CV parsing, automated scheduling, and data-driven candidate ranking to provide an efficient experience for both recruiters and talent.' },
     { id: 'p2', number: '02', logoSrc: '/afrinest.png', videoSrc: '/videos/video2.mp4', title: 'AFRINEST GLOBAL', description: 'Empowering Africans and the diaspora through real estate education and verified professional networks, serving as a trusted global bridge to build generational wealth.' },
     { id: 'p3', number: '03', logoSrc: '/chisitra.png', videoSrc: '/videos/video3.mp4', title: 'EAVI', description: ' EAVI a comprehensive Learning Management System (LMS) designed to bridge the gap between instructors and learners.' },
     { id: 'p4', number: '04', logoSrc: '/Bet.jpeg', videoSrc: '/videos/video4.mp4', title: 'BetAman', description: 'BetAman ("Home Trust") uses AI-powered scam detection, Solana escrow, and on-chain reputation to stop rental fraud in Ethiopia.' },
