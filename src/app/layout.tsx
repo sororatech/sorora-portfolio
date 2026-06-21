@@ -22,10 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-  
-    <html lang="en" className={`${nunito.variable} h-full antialiased`} suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning={true}>
       <body 
-        className="min-h-full flex flex-col font-sans bg-background text-foreground"
+        className={`${nunito.variable} min-h-full flex flex-col font-sans bg-background text-foreground antialiased`}
         suppressHydrationWarning={true}
       >
         {children}
