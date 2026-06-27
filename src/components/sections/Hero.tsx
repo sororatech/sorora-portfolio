@@ -8,7 +8,9 @@ import { Lightbulb, PenTool, Code, Rocket, BarChart3, Users, Target } from 'luci
 export default function Hero() {
   const [showIntro, setShowIntro] = useState(true);
   const [showLogoText, setShowLogoText] = useState(false);
-  const [particles, setParticles] = useState<Array<{
+  
+  // Splash screen specific particles
+  const [splashParticles, setSplashParticles] = useState<Array<{
     id: number;
     x: number;
     y: number;
@@ -17,29 +19,34 @@ export default function Hero() {
   }>>([]);
 
   useEffect(() => {
-    const initialParticles = Array.from({ length: 70 }, (_, i) => ({
-      id: i,
-      x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-      y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-    }));
-    setParticles(initialParticles);
-
     const logoTimer = setTimeout(() => setShowLogoText(true), 2500);
     const transitionTimer = setTimeout(() => setShowIntro(false), 5000);
 
+    // Initialize splash particles
+    const initialParticles = Array.from({ length: 60 }, (_, i) => ({
+      id: i,
+      x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+      y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+    }));
+    setSplashParticles(initialParticles);
+
+    // Animate splash particles (slow and smooth)
     const animateParticles = setInterval(() => {
-      setParticles(prevParticles =>
-        prevParticles.map(particle => ({
-          ...particle,
-          x: particle.x + particle.vx,
-          y: particle.y + particle.vy,
-        })).map(particle => ({
-          ...particle,
-          x: particle.x < 0 || particle.x > (typeof window !== 'undefined' ? window.innerWidth : 1000) ? -particle.vx : particle.x,
-          y: particle.y < 0 || particle.y > (typeof window !== 'undefined' ? window.innerHeight : 800) ? -particle.vy : particle.y,
-        }))
+      setSplashParticles(prevParticles =>
+        prevParticles.map(particle => {
+          let newX = particle.x + particle.vx;
+          let newY = particle.y + particle.vy;
+
+          const width = typeof window !== 'undefined' ? window.innerWidth : 1000;
+          const height = typeof window !== 'undefined' ? window.innerHeight : 800;
+          
+          if (newX < 0 || newX > width) newX = -particle.vx;
+          if (newY < 0 || newY > height) newY = -particle.vy;
+
+          return { ...particle, x: newX, y: newY };
+        })
       );
     }, 50);
 
@@ -50,22 +57,22 @@ export default function Hero() {
     };
   }, []);
 
-  const getLines = (color: string) => {
+  const getSplashLines = () => {
     const lines = [];
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
+    for (let i = 0; i < splashParticles.length; i++) {
+      for (let j = i + 1; j < splashParticles.length; j++) {
+        const dx = splashParticles[i].x - splashParticles[j].x;
+        const dy = splashParticles[i].y - splashParticles[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < 150) {
           lines.push(
             <line
               key={`${i}-${j}`}
-              x1={particles[i].x}
-              y1={particles[i].y}
-              x2={particles[j].x}
-              y2={particles[j].y}
-              stroke={color}
+              x1={splashParticles[i].x}
+              y1={splashParticles[i].y}
+              x2={splashParticles[j].x}
+              y2={splashParticles[j].y}
+              stroke="rgba(255, 255, 255, 0.08)"
               strokeWidth="0.5"
             />
           );
@@ -93,12 +100,12 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           exit={{ y: "-100%", opacity: 0 }}
           transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 bg-[#0a0a0a] flex items-center justify-center z-50 overflow-hidden"
+          className="fixed inset-0 flex items-center justify-center z-[100] overflow-hidden bg-[#030303]"
         >
-          {/* White Particle Network for Splash */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            {getLines("rgba(255, 255, 255, 0.15)")}
-            {particles.map(particle => (
+          {/* Splash Screen Particle Background */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+            {getSplashLines()}
+            {splashParticles.map(particle => (
               <circle
                 key={particle.id}
                 cx={particle.x}
@@ -109,7 +116,12 @@ export default function Hero() {
             ))}
           </svg>
 
-          <div className="relative z-10 flex items-center">
+          {/* Subtle Glows for Splash */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-pink-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
+
+          {/* Splash Content */}
+          <div className="relative z-10 flex items-center flex-col sm:flex-row px-4">
             <motion.div
               initial={{ x: 0, opacity: 0 }}
               animate={showLogoText ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
@@ -118,9 +130,9 @@ export default function Hero() {
               <Image
                 src="/logo.png"
                 alt="Sorora Logo"
-                width={320}
-                height={320}
-                className="object-contain"
+                width={200}
+                height={200}
+                className="object-contain w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64"
               />
             </motion.div>
 
@@ -128,9 +140,9 @@ export default function Hero() {
               initial={{ opacity: 0, x: 0, maxWidth: 0 }}
               animate={showLogoText ? { opacity: 1, x: 0, maxWidth: 600 } : { opacity: 0, x: 0, maxWidth: 0 }}
               transition={{ duration: 1, delay: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden whitespace-nowrap -ml-16"
+              className="overflow-hidden whitespace-nowrap sm:-ml-8 md:-ml-16 mt-4 sm:mt-0"
             >
-              <span className="text-7xl md:text-8xl font-light text-white tracking-tight">
+              <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-white tracking-tight">
                 Sorora Tech
               </span>
             </motion.div>
@@ -145,27 +157,11 @@ export default function Hero() {
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 bg-[#0a0a0a] pt-24"
+          className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 pt-24"
         >
-          {/* White Particle Network for Hero Background - NOW WHITE */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            {getLines("rgba(255, 255, 255, 0.08)")}
-            {particles.map(particle => (
-              <circle
-                key={particle.id}
-                cx={particle.x}
-                cy={particle.y}
-                r="1.5"
-                fill="rgba(255, 255, 255, 0.6)"
-              />
-            ))}
-          </svg>
-
-          <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-
-            {/* Left Content */}
+          <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
             <div className="space-y-6 z-10 text-center lg:text-left">
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                 <span className="text-white block">We build</span>
                 <span className="block">
                   <span className="text-white">digital </span>
@@ -175,14 +171,13 @@ export default function Hero() {
                 </span>
                 <span className="text-white block">together.</span>
               </h1>
-              <p className="text-gray-400 text-lg max-w-lg leading-relaxed mx-auto lg:mx-0">
+              <p className="text-gray-400 text-base sm:text-lg max-w-lg leading-relaxed mx-auto lg:mx-0">
                 A collaborative team of software engineers crafting intelligent,
                 scalable and meaningful digital solutions. From terminal-level
                 architecture to immersive front-end experiences.
               </p>
             </div>
 
-            {/* Right Content - Orbital Design */}
             <div className="flex items-center justify-center relative">
               <OrbitalDesign orbitItems={orbitItems} />
             </div>
@@ -194,22 +189,36 @@ export default function Hero() {
 }
 
 function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon: any; angle: number; radius: number }> }) {
+  const [orbitRadius, setOrbitRadius] = useState(110);
+
+  useEffect(() => {
+    const updateRadius = () => {
+      const width = window.innerWidth;
+      if (width >= 1280) {
+        setOrbitRadius(200);
+      } else if (width >= 1024) {
+        setOrbitRadius(200);
+      } else if (width >= 768) {
+        setOrbitRadius(170);
+      } else if (width >= 640) {
+        setOrbitRadius(140);
+      } else {
+        setOrbitRadius(110);
+      }
+    };
+
+    updateRadius();
+    window.addEventListener('resize', updateRadius);
+    return () => window.removeEventListener('resize', updateRadius);
+  }, []);
+
   return (
-    <div className="relative w-[500px] h-[500px] md:w-[540px] md:h-[540px]">
-
-      {/* Subtle Background Glow */}
+    <div className="relative w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] xl:w-[540px] xl:h-[540px]">
       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-purple-500/5 blur-2xl" />
-
-      {/* Outer Orbital Ring */}
       <div className="absolute inset-0 rounded-full border border-purple-500/10" />
+      <div className="absolute inset-8 sm:inset-10 md:inset-12 rounded-full border border-purple-500/8" />
+      <div className="absolute inset-16 sm:inset-20 md:inset-24 rounded-full border border-purple-500/6" />
 
-      {/* Middle Orbital Ring */}
-      <div className="absolute inset-12 rounded-full border border-purple-500/8" />
-
-      {/* Inner Orbital Ring */}
-      <div className="absolute inset-24 rounded-full border border-purple-500/6" />
-
-      {/* Orbiting Items Container - Rotates slowly */}
       <motion.div
         className="absolute inset-0"
         animate={{ rotate: 360 }}
@@ -218,8 +227,8 @@ function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon:
         {orbitItems.map((item) => {
           const Icon = item.icon;
           const radians = (item.angle * Math.PI) / 180;
-          const x = Math.cos(radians) * item.radius;
-          const y = Math.sin(radians) * item.radius;
+          const x = Math.cos(radians) * orbitRadius;
+          const y = Math.sin(radians) * orbitRadius;
 
           return (
             <div
@@ -229,21 +238,18 @@ function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon:
                 transform: `translate(${x}px, ${y}px) translate(-50%, -50%)`,
               }}
             >
-              {/* Counter-rotate to keep text upright */}
               <motion.div
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-1 sm:gap-2"
                 animate={{ rotate: -360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
               >
-                {/* Icon with subtle glow */}
                 <div className="relative">
                   <div className="absolute inset-0 bg-purple-500/20 blur-lg rounded-full" />
-                  <div className="relative w-11 h-11 rounded-full bg-[#0a0a0a]/80 border border-purple-400/20 flex items-center justify-center backdrop-blur-sm">
-                    <Icon className="w-5 h-5 text-purple-300/80" strokeWidth={1.5} />
+                  <div className="relative w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-[#0a0a0a]/80 border border-purple-400/20 flex items-center justify-center backdrop-blur-sm">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-300/80" strokeWidth={1.5} />
                   </div>
                 </div>
-                {/* Label - Always readable */}
-                <span className="text-[11px] font-medium text-white/70 tracking-wider whitespace-nowrap">
+                <span className="text-[9px] sm:text-[10px] md:text-[11px] font-medium text-white/70 tracking-wider whitespace-nowrap">
                   {item.name}
                 </span>
               </motion.div>
@@ -252,22 +258,16 @@ function OrbitalDesign({ orbitItems }: { orbitItems: Array<{ name: string; icon:
         })}
       </motion.div>
 
-      {/* Center Glowing Logo */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        {/* Outer glow ring */}
-        <div className="absolute inset-[-50px] rounded-full bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 blur-xl" />
-
-        {/* Middle glow ring */}
-        <div className="absolute inset-[-35px] rounded-full border border-purple-400/15" />
-
-        {/* Inner glow circle */}
-        <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-purple-600/20 via-pink-500/10 to-purple-600/20 border border-purple-400/20 flex items-center justify-center backdrop-blur-sm">
+        <div className="absolute inset-[-30px] sm:inset-[-40px] md:inset-[-50px] rounded-full bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 blur-xl" />
+        <div className="absolute inset-[-20px] sm:inset-[-28px] md:inset-[-35px] rounded-full border border-purple-400/15" />
+        <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-gradient-to-br from-purple-600/20 via-pink-500/10 to-purple-600/20 border border-purple-400/20 flex items-center justify-center backdrop-blur-sm">
           <Image
             src="/light.png"
             alt="Sorora Center Logo"
             width={70}
             height={70}
-            className="object-contain"
+            className="object-contain w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16"
           />
         </div>
       </div>
