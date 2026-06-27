@@ -1,62 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function AboutPage() {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; vx: number; vy: number }>>([]);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    const init = Array.from({ length: 40 }, (_, i) => ({
-      id: i,
-      x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-      y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-      vx: (Math.random() - 0.5) * 0.1,
-      vy: (Math.random() - 0.5) * 0.1,
-    }));
-    setParticles(init);
-
-    const interval = setInterval(() => {
-      setParticles(p => p.map(pt => ({
-        ...pt,
-        x: pt.x + pt.vx,
-        y: pt.y + pt.vy,
-      })).map(pt => ({
-        ...pt,
-        x: (pt.x < 0 || pt.x > (typeof window !== 'undefined' ? window.innerWidth : 1000)) ? -pt.vx : pt.x,
-        y: (pt.y < 0 || pt.y > (typeof window !== 'undefined' ? window.innerHeight : 800)) ? -pt.vy : pt.y,
-      })));
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
-
-  const getLines = () => {
-    const lines = [];
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dist = Math.sqrt((particles[i].x - particles[j].x)**2 + (particles[i].y - particles[j].y)**2);
-        if (dist < 150) {
-          lines.push(<line key={`${i}-${j}`} x1={particles[i].x} y1={particles[i].y} x2={particles[j].x} y2={particles[j].y} stroke="rgba(168, 85, 247, 0.03)" strokeWidth="0.5" />);
-        }
-      }
-    }
-    return lines;
-  };
-
   return (
-    <section id="about" className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-16 overflow-hidden relative border-t border-zinc-900">
+    // Removed border-t and border-zinc-900
+    <section id="about" className="min-h-screen text-white p-6 md:p-16 overflow-hidden relative">
       {/* Structural Lines - Hidden on small and medium screens */}
       <div className="hidden lg:block absolute top-[30%] left-0 w-full h-[1px] bg-white/5 z-0" />
       <div className="hidden lg:block absolute top-0 left-[75%] w-[1px] h-full bg-white/5 z-0" />
-
-      {isMounted && (
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-          {getLines()}
-          {particles.map(p => <circle key={p.id} cx={p.x} cy={p.y} r="1" fill="rgba(236, 72, 153, 0.2)" />)}
-        </svg>
-      )}
 
       {/* Header */}
       <header className="z-10 relative mb-16">
@@ -88,7 +41,7 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Logo Container - Hidden on small and medium screens (lg breakpoint), visible on large screens */}
+      {/* Logo Container */}
       <div
         className="hidden lg:flex absolute z-20"
         style={{ top: '30%', left: '75%', transform: 'translate(-50%, -50%)' }}
