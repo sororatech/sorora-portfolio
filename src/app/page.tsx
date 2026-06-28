@@ -17,12 +17,11 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Hero/>
-      <Services/>
-      <Projects />
+      <Hero />
       <About />
-      <Contact/>
-      <Footer />
+      <Projects />
+      <Services />
+      <Contact />
     </>
   );
 }
