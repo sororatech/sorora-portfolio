@@ -1,87 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Lightbulb, PenTool, Code, Rocket, BarChart3, Users, Target } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Lightbulb, PenTool, Code, Rocket, BarChart3, Users } from 'lucide-react';
 
 export default function Hero() {
-  const [showIntro, setShowIntro] = useState(true);
-  const [showLogoText, setShowLogoText] = useState(false);
-  
-  // Splash screen specific particles
-  const [splashParticles, setSplashParticles] = useState<Array<{
-    id: number;
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-  }>>([]);
-
-  useEffect(() => {
-    const logoTimer = setTimeout(() => setShowLogoText(true), 2500);
-    const transitionTimer = setTimeout(() => setShowIntro(false), 5000);
-
-    // Initialize splash particles
-    const initialParticles = Array.from({ length: 60 }, (_, i) => ({
-      id: i,
-      x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-      y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-    }));
-    setSplashParticles(initialParticles);
-
-    // Animate splash particles (slow and smooth)
-    const animateParticles = setInterval(() => {
-      setSplashParticles(prevParticles =>
-        prevParticles.map(particle => {
-          let newX = particle.x + particle.vx;
-          let newY = particle.y + particle.vy;
-
-          const width = typeof window !== 'undefined' ? window.innerWidth : 1000;
-          const height = typeof window !== 'undefined' ? window.innerHeight : 800;
-          
-          if (newX < 0 || newX > width) newX = -particle.vx;
-          if (newY < 0 || newY > height) newY = -particle.vy;
-
-          return { ...particle, x: newX, y: newY };
-        })
-      );
-    }, 50);
-
-    return () => {
-      clearTimeout(logoTimer);
-      clearTimeout(transitionTimer);
-      clearInterval(animateParticles);
-    };
-  }, []);
-
-  const getSplashLines = () => {
-    const lines = [];
-    for (let i = 0; i < splashParticles.length; i++) {
-      for (let j = i + 1; j < splashParticles.length; j++) {
-        const dx = splashParticles[i].x - splashParticles[j].x;
-        const dy = splashParticles[i].y - splashParticles[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 150) {
-          lines.push(
-            <line
-              key={`${i}-${j}`}
-              x1={splashParticles[i].x}
-              y1={splashParticles[i].y}
-              x2={splashParticles[j].x}
-              y2={splashParticles[j].y}
-              stroke="rgba(255, 255, 255, 0.08)"
-              strokeWidth="0.5"
-            />
-          );
-        }
-      }
-    }
-    return lines;
-  };
-
   const orbitItems = [
     { name: 'INNOVATE', icon: Lightbulb, angle: -90, radius: 200 },
     { name: 'DESIGN', icon: PenTool, angle: -30, radius: 200 },
@@ -92,99 +16,40 @@ export default function Hero() {
   ];
 
   return (
-    <AnimatePresence mode="wait">
-      {showIntro && (
-        <motion.div
-          key="splash"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 flex items-center justify-center z-[100] overflow-hidden bg-[#030303]"
-        >
-          {/* Splash Screen Particle Background */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-            {getSplashLines()}
-            {splashParticles.map(particle => (
-              <circle
-                key={particle.id}
-                cx={particle.x}
-                cy={particle.y}
-                r="1.5"
-                fill="rgba(255, 255, 255, 0.6)"
-              />
-            ))}
-          </svg>
-
-          {/* Subtle Glows for Splash */}
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-pink-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
-
-          {/* Splash Content */}
-          <div className="relative z-10 flex items-center flex-col sm:flex-row px-4">
-            <motion.div
-              initial={{ x: 0, opacity: 0 }}
-              animate={showLogoText ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
-              transition={{ duration: 1, ease: "easeInOut" }}
-            >
-              <Image
-                src="/logo.png"
-                alt="Sorora Logo"
-                width={200}
-                height={200}
-                className="object-contain w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64"
-              />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 0, maxWidth: 0 }}
-              animate={showLogoText ? { opacity: 1, x: 0, maxWidth: 600 } : { opacity: 0, x: 0, maxWidth: 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden whitespace-nowrap sm:-ml-8 md:-ml-16 mt-4 sm:mt-0"
-            >
-              <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-white tracking-tight">
-                Sorora Tech
+    <motion.section
+      id="home"
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      // Updated padding to match About Us page (px-6 md:px-16)
+      className="min-h-screen flex items-center justify-center relative overflow-hidden px-6 md:px-16 pt-24"
+    >
+      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
+        <div className="space-y-6 z-10 text-center lg:text-left">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+            <span className="text-white block">We build</span>
+            <span className="block">
+              <span className="text-white">digital </span>
+              <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                futures
               </span>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
+            </span>
+            <span className="text-white block">together.</span>
+          </h1>
+          
+          {/* Updated max-width and typography to match About Us page */}
+          <p className="text-gray-400 text-xl md:text-2xl font-light leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            A collaborative team of software engineers crafting intelligent,
+            scalable and meaningful digital solutions. From terminal-level
+            architecture to immersive front-end experiences.
+          </p>
+        </div>
 
-      {!showIntro && (
-        <motion.section
-          key="hero"
-          id="home"
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 pt-24"
-        >
-          <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
-            <div className="space-y-6 z-10 text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                <span className="text-white block">We build</span>
-                <span className="block">
-                  <span className="text-white">digital </span>
-                  <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    futures
-                  </span>
-                </span>
-                <span className="text-white block">together.</span>
-              </h1>
-              <p className="text-gray-400 text-base sm:text-lg max-w-lg leading-relaxed mx-auto lg:mx-0">
-                A collaborative team of software engineers crafting intelligent,
-                scalable and meaningful digital solutions. From terminal-level
-                architecture to immersive front-end experiences.
-              </p>
-            </div>
-
-            <div className="flex items-center justify-center relative">
-              <OrbitalDesign orbitItems={orbitItems} />
-            </div>
-          </div>
-        </motion.section>
-      )}
-    </AnimatePresence>
+        <div className="flex items-center justify-center relative">
+          <OrbitalDesign orbitItems={orbitItems} />
+        </div>
+      </div>
+    </motion.section>
   );
 }
 
