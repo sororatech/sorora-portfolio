@@ -1,22 +1,17 @@
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import Hero from "@/components/sections/Hero";
-import Projects from "@/components/sections/Projects";
-import About from "@/components/sections/About";
-import Contact from "@/components/sections/Contact";
-import Services from "@/components/sections/Services";
-
-
-
-
-
-
-
+import SplashScreen from '@/components/sections/Splash';
+import Hero from '@/components/sections/Hero';
+import About from '@/components/sections/About'; // adjust path as needed
+import Projects from '@/components/sections/Projects';
+import Services from '@/components/sections/Services';
+import Contact from '@/components/sections/Contact';
 
 export default function Home() {
   return (
     <>
-      <Navbar />
+      {/* Splash screen sits above everything else */}
+      <SplashScreen />
+      
+      {/* The rest of your site */}
       <Hero />
       <About />
       <Projects />
@@ -25,4 +20,3 @@ export default function Home() {
     </>
   );
 }
-

@@ -27,7 +27,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body 
-        className={`${nunito.variable} min-h-full flex flex-col font-sans bg-background text-foreground antialiased`}
+        // Changed bg-background to bg-[#030303] to prevent white flash on load
+        className={`${nunito.variable} min-h-full flex flex-col font-sans bg-[#030303] text-foreground antialiased`}
         suppressHydrationWarning={true}
       >
         <GlobalBackground />
