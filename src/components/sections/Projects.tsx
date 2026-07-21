@@ -71,8 +71,8 @@ export default function Projects() {
             <div
               key={project.id}
               ref={(el) => { cardRefs.current[index] = el; }}
-              // Full width on mobile/medium, auto width on desktop
-              className="relative w-full lg:w-auto h-[450px] md:h-[480px] lg:h-[500px] group"
+              // Card expands in height on hover to make room for the text at the bottom
+              className="relative w-full lg:w-auto h-[450px] md:h-[480px] lg:h-[500px] transition-all duration-700 hover:h-[560px] md:hover:h-[590px] lg:hover:h-[620px] group"
             >
               <div
                 onMouseEnter={() => {
@@ -86,8 +86,8 @@ export default function Projects() {
                     video.currentTime = 0;
                   }
                 }}
-                // Responsive padding and hover heights
-                className="relative w-full h-full bg-black border border-pink-500/30 rounded-xl overflow-hidden cursor-pointer transition-all duration-700 hover:border-pink-500/60 hover:h-[410px] md:hover:h-[440px] lg:hover:h-[460px] p-6 sm:p-8 shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:shadow-[0_0_40px_rgba(236,72,153,0.5)]"
+                // Inner card matches the outer height (h-full) and handles the visual styling
+                className="relative w-full h-full bg-black border border-pink-500/30 rounded-xl overflow-hidden cursor-pointer transition-all duration-700 hover:border-pink-500/60 p-6 sm:p-8 shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:shadow-[0_0_40px_rgba(236,72,153,0.5)]"
               >
                 {/* Video Preview */}
                 <div className="absolute inset-x-0 top-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 overflow-hidden flex items-start justify-center pt-2">
@@ -113,8 +113,8 @@ export default function Projects() {
                   {project.title}
                 </p>
 
-                {/* Description - Uses fixed pixels on hover to stay perfectly below the video */}
-                <div className="absolute top-[62%] md:top-[61%] lg:top-[60%] left-1/2 -translate-x-1/2 w-full max-w-[260px] text-center transition-all duration-700 ease-in-out group-hover:top-[150px] sm:group-hover:top-[175px] md:group-hover:top-[190px] lg:group-hover:top-[210px] z-10">
+                {/* Description - Moved much lower on hover */}
+                <div className="absolute top-[62%] md:top-[61%] lg:top-[60%] left-1/2 -translate-x-1/2 w-full max-w-[260px] text-center transition-all duration-700 ease-in-out group-hover:top-[350px] sm:group-hover:top-[380px] md:group-hover:top-[410px] lg:group-hover:top-[440px] z-10">
                   <p className="text-gray-400 text-xs sm:text-sm font-light leading-relaxed px-2">
                     {project.description}
                   </p>

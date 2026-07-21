@@ -55,10 +55,10 @@ const Navbar = () => {
       {/* Added 'relative' to container to anchor the mobile dropdown */}
       <div className="container mx-auto px-4 relative"> 
         
-        {/* Pill Container */}
-        <div className="relative flex items-center w-full max-w-4xl mx-auto bg-black backdrop-blur-xl rounded-full border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.08),0_8px_32px_rgba(0,0,0,0.8)] px-2 py-2">
+        {/* Pill Container - REMOVED 'bg-black' HERE */}
+        <div className="relative flex items-center w-full max-w-4xl mx-auto backdrop-blur-xl rounded-full border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.08),0_8px_32px_rgba(0,0,0,0.8)] px-2 py-2">
          
-          {/* 1. Logo Section (Left) - Scaled down slightly on medium screens to free up space */}
+          {/* 1. Logo Section (Left) */}
           <div className="flex-shrink-0 w-12 md:w-16 lg:w-24 flex items-center justify-center pl-4 md:pl-4 lg:pl-6">
             <Link href="#home">
               <Image
@@ -84,8 +84,6 @@ const Navbar = () => {
                     href={link.href}
                     ref={(el) => { linkRefs.current[link.name] = el; }}
                     onClick={() => setActiveLink(link.name)}
-                    // Added whitespace-nowrap to prevent "ABOUT US" from breaking into two lines
-                    // Reduced padding on medium screens (md:px-3) to save horizontal space
                     className="relative px-2 md:px-3 lg:px-4 py-3 group whitespace-nowrap"
                   >
                     {/* THE SPOTLIGHT EFFECT (Active Only) */}
@@ -108,7 +106,7 @@ const Navbar = () => {
                       </>
                     )}
 
-                    {/* Link Text - Reduced tracking (letter-spacing) on medium screens to make text physically shorter */}
+                    {/* Link Text */}
                     <span
                       className={`relative z-10 text-[10px] md:text-[11px] lg:text-xs font-bold tracking-[0.1em] md:tracking-[0.15em] lg:tracking-[0.2em] transition-colors duration-300 ${
                         isActive ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'
@@ -122,7 +120,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* 3. Spacer (Right - Desktop Only) - Matches logo width to keep links perfectly centered */}
+          {/* 3. Spacer (Right - Desktop Only) */}
           <div className="hidden md:block flex-shrink-0 w-12 md:w-16 lg:w-24" />
 
           {/* 4. Hamburger Menu Button (Mobile Only) */}
@@ -150,9 +148,9 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu Dropdown - REMOVED 'bg-black/90' HERE */}
         {isMenuOpen && (
-          <div className="absolute top-full left-4 right-4 mt-2 p-4 bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.8)] md:hidden z-40">
+          <div className="absolute top-full left-4 right-4 mt-2 p-4 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.8)] md:hidden z-40">
             <div className="flex flex-col">
               {navLinks.map((link) => {
                 const isActive = activeLink === link.name;
@@ -164,16 +162,16 @@ const Navbar = () => {
                     href={link.href}
                     onClick={() => {
                       setActiveLink(link.name);
-                      setIsMenuOpen(false); // Auto-close menu when a link is clicked
+                      setIsMenuOpen(false); 
                     }}
                     className="relative w-full text-center px-4 py-4 group border-b border-white/5 last:border-b-0"
                   >
-                    {/* Spotlight Effect for Mobile (Simplified for vertical layout) */}
+                    {/* Spotlight Effect for Mobile */}
                     {isActive && (
                       <>
                         <div
                           className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_20px_rgba(255,255,255,0.9)]"
-                          style={{ width: `${Math.max(textWidth, 100)}px` }} // Ensures the line isn't too tiny on mobile
+                          style={{ width: `${Math.max(textWidth, 100)}px` }} 
                         />
                         <div className="absolute inset-0 bg-white/10 blur-xl rounded-full -z-10" />
                       </>
