@@ -1,11 +1,14 @@
 "use client";
 
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
 
 export default function AboutPage() {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; vx: number; vy: number }>>([]);
   const [isMounted, setIsMounted] = useState(false);
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -17,6 +20,7 @@ export default function AboutPage() {
       vy: (Math.random() - 0.5) * 0.1,
     }));
     setParticles(init);
+
 
     const interval = setInterval(() => {
       setParticles(p => p.map(pt => ({
@@ -32,6 +36,7 @@ export default function AboutPage() {
     return () => clearInterval(interval);
   }, []);
 
+
   const getLines = () => {
     const lines = [];
     for (let i = 0; i < particles.length; i++) {
@@ -45,11 +50,13 @@ export default function AboutPage() {
     return lines;
   };
 
+
   return (
     <section id="about" className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-16 overflow-hidden relative border-t border-zinc-900">
       {/* Structural Lines - Hidden on small and medium screens */}
       <div className="hidden lg:block absolute top-[30%] left-0 w-full h-[1px] bg-white/5 z-0" />
       <div className="hidden lg:block absolute top-0 left-[75%] w-[1px] h-full bg-white/5 z-0" />
+
 
       {isMounted && (
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -58,11 +65,12 @@ export default function AboutPage() {
         </svg>
       )}
 
+
       {/* Header */}
       <header className="z-10 relative mb-12 sm:mb-20">
-        <motion.div 
-          initial="hidden" 
-          animate="visible" 
+        <motion.div
+          initial="hidden"
+          animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
           className="flex flex-col items-center"
         >
@@ -75,25 +83,29 @@ export default function AboutPage() {
         </motion.div>
       </header>
 
+
       {/* Description Section - Back to original left-aligned position */}
       <section className="relative z-10 pt-[5vh] max-w-2xl space-y-12">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ visible: { transition: { staggerChildren: 0.3 } } }}>
-          
+         
           {/* Main paragraph: Comfortable reading size */}
           <motion.p variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="text-white text-base md:text-lg font-light leading-relaxed border-l-2 border-pink-500 pl-6">
             <span className="text-pink-500 font-bold">Sorora Tech</span> is a women-led collective specializing in AI, web, and mobile development. Brought together by a shared vision, we combine diverse expertise with high-velocity execution to deliver fast, high-quality products for our users. Our culture is built on lifting each other up, embracing constructive feedback, and relentlessly pursuing engineering excellence.
           </motion.p>
+
 
           {/* Sub-text: Slightly smaller for visual hierarchy */}
           <motion.p variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="text-gray-400 text-sm md:text-base font-light mt-8 pl-6">
             <span className="text-zinc-200 font-normal">Our expertise</span> spans artificial intelligence, backend engineering, frontend development, mobile applications, and data systems.
           </motion.p>
 
+
           <motion.p variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="text-gray-500 text-sm md:text-base font-light mt-4 pl-6">
             This enables us to build complete digital platforms from concept to deployment.
           </motion.p>
         </motion.div>
       </section>
+
 
       {/* Logo Container - Hidden on small and medium screens (lg breakpoint), visible on large screens */}
       <div
@@ -113,3 +125,4 @@ export default function AboutPage() {
     </section>
   );
 }
+
