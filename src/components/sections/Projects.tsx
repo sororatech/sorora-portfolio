@@ -23,6 +23,7 @@ export default function Projects() {
     setIsMounted(true);
   }, []);
 
+  // Auto-scroll logic
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -44,6 +45,63 @@ export default function Projects() {
     return () => cancelAnimationFrame(requestId);
   }, [isPaused]);
 
+  // Sync the active dash with manual swipes or auto-scroll
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container || window.innerWidth < 1024) return;
+
+    const handleScroll = () => {
+      let closestIndex = 0;
+      let minDistance = Infinity;
+      
+      cardRefs.current.forEach((card, index) => {
+        if (card) {
+          const cardRect = card.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          const cardCenter = cardRect.left + cardRect.width / 2;
+          const containerCenter = containerRect.left + containerRect.width / 2;
+          const distance = Math.abs(cardCenter - containerCenter);
+          
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestIndex = index;
+          }
+        }
+      });
+      
+      if (closestIndex !== activeIndex) {
+        setActiveIndex(closestIndex);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [activeIndex]);
+
+  // Bulletproof click handler
+  const handleDotClick = (index: number) => {
+    setActiveIndex(index);
+    setIsPaused(true); // 1. Stop auto-scroll immediately so it doesn't fight the click
+    
+    setTimeout(() => {
+      const card = cardRefs.current[index];
+      if (card) {
+        if (window.innerWidth >= 1024) {
+          // 2. Native browser centering (works perfectly with the scroll-px padding below)
+          card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } else {
+          // Mobile: scroll vertically to the card
+          card.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        }
+      }
+    }, 50);
+
+    // 3. Resume auto-scroll after the glide is finished
+    setTimeout(() => {
+      setIsPaused(false);
+    }, 1500);
+  };
+
   const projects: Project[] = [
     { id: 'p1', number: '01', logoSrc: '/servia.png', videoSrc: '/videos/video1.mp4', title: 'SERVIA', description: 'Servia AI is an all-in-one recruitment platform that accelerates hiring through intelligent CV parsing, automated scheduling, and data-driven candidate ranking to provide an efficient experience for both recruiters and talent.' },
     { id: 'p2', number: '02', logoSrc: '/afrinest.png', videoSrc: '/videos/video2.mp4', title: 'AFRINEST GLOBAL', description: 'Empowering Africans and the diaspora through real estate education and verified professional networks, serving as a trusted global bridge to build generational wealth.' },
@@ -55,27 +113,37 @@ export default function Projects() {
   if (!isMounted) return null;
 
   return (
-    // REMOVED: bg-[#0a0a0a], border-t, and border-zinc-900
-    <section id="projects" className="relative min-h-screen py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center overflow-hidden">
+    <section id="projects" className="relative min-h-screen bg-[#0a0a0a] py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center overflow-hidden border-t border-zinc-900">
       <div className="relative z-10 flex flex-col items-center w-full">
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-12 sm:mb-20 text-center">What we have built</h2>
 
+        {/* 
+          lg:scroll-px-[calc(50vw-175px)] is the magic key: 
+          It adds invisible padding to the edges so the 1st and last cards 
+          can physically reach the exact center of the screen.
+        */}
         <div
           ref={scrollContainerRef}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="flex flex-col lg:grid lg:grid-flow-col lg:auto-cols-[300px] xl:auto-cols-[350px] gap-6 w-full max-w-7xl lg:overflow-x-auto pb-10 hide-scrollbar"
+          className="flex flex-col lg:grid lg:grid-flow-col lg:auto-cols-[300px] xl:auto-cols-[350px] gap-6 w-full max-w-7xl lg:overflow-x-auto pb-10 hide-scrollbar lg:scroll-px-[calc(50vw-175px)]"
         >
           {projects.map((project, index) => (
             <div
               key={project.id}
               ref={(el) => { cardRefs.current[index] = el; }}
-              className="relative w-full lg:w-auto h-[450px] md:h-[480px] lg:h-[500px] group"
+              className="relative w-full lg:w-auto h-[450px] md:h-[480px] lg:h-[500px] transition-all duration-700 hover:h-[560px] md:hover:h-[590px] lg:hover:h-[620px] group"
             >
               <div
+                onClick={() => {
+                  setActiveIndex(index);
+                  const video = videoRefs.current[project.id];
+                  if (video) video.play().catch(() => {});
+                }}
                 onMouseEnter={() => {
                   setActiveIndex(index);
-                  videoRefs.current[project.id]?.play().catch(() => {});
+                  const video = videoRefs.current[project.id];
+                  if (video) video.play().catch(() => {});
                 }}
                 onMouseLeave={() => {
                   const video = videoRefs.current[project.id];
@@ -84,8 +152,9 @@ export default function Projects() {
                     video.currentTime = 0;
                   }
                 }}
-                className="relative w-full h-full bg-black border border-pink-500/30 rounded-xl overflow-hidden cursor-pointer transition-all duration-700 hover:border-pink-500/60 hover:h-[410px] md:hover:h-[440px] lg:hover:h-[460px] p-6 sm:p-8 shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:shadow-[0_0_40px_rgba(236,72,153,0.5)]"
+                className="relative w-full h-full bg-black border border-pink-500/30 rounded-xl overflow-hidden cursor-pointer transition-all duration-700 hover:border-pink-500/60 p-6 sm:p-8 shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:shadow-[0_0_40px_rgba(236,72,153,0.5)]"
               >
+                {/* Video Preview */}
                 <div className="absolute inset-x-0 top-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 overflow-hidden flex items-start justify-center pt-2">
                   <video
                     ref={(el) => { videoRefs.current[project.id] = el; }}
@@ -107,7 +176,7 @@ export default function Projects() {
                   {project.title}
                 </p>
 
-                <div className="absolute top-[62%] md:top-[61%] lg:top-[60%] left-1/2 -translate-x-1/2 w-full max-w-[260px] text-center transition-all duration-700 ease-in-out group-hover:top-[150px] sm:group-hover:top-[175px] md:group-hover:top-[190px] lg:group-hover:top-[210px] z-10">
+                <div className="absolute top-[62%] md:top-[61%] lg:top-[60%] left-1/2 -translate-x-1/2 w-full max-w-[260px] text-center transition-all duration-700 ease-in-out group-hover:top-[350px] sm:group-hover:top-[380px] md:group-hover:top-[410px] lg:group-hover:top-[440px] z-10">
                   <p className="text-gray-400 text-xs sm:text-sm font-light leading-relaxed px-2">
                     {project.description}
                   </p>
@@ -118,6 +187,22 @@ export default function Projects() {
                 </span>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Pagination Dashes */}
+        <div className="flex items-center justify-center gap-3 mt-8 sm:mt-12">
+          {projects.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                activeIndex === index 
+                  ? 'w-8 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.8)]' 
+                  : 'w-3 bg-zinc-700 hover:bg-pink-500/50'
+              }`}
+              aria-label={`Go to project ${index + 1}`}
+            />
           ))}
         </div>
       </div>
