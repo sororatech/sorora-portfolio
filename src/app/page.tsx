@@ -11,7 +11,6 @@ export default function Home() {
       {/* Splash screen sits above everything else */}
       <SplashScreen />
       
-      {/* The rest of your site */}
       <Hero />
       <About />
       <Projects />
