@@ -8,18 +8,18 @@ export default function Services() {
   const [activeService, setActiveService] = useState<number | null>(null);
   const [hoveredService, setHoveredService] = useState<number | null>(null);
   const [isHoveringOrbit, setIsHoveringOrbit] = useState(false);
-  const [radius, setRadius] = useState(150);
-  const [containerSize, setContainerSize] = useState(320);
+  const [radius, setRadius] = useState(160);
+  const [containerSize, setContainerSize] = useState(400);
 
   useEffect(() => {
     const updateSizes = () => {
       const width = window.innerWidth;
       
       if (width >= 1280) {
-        setRadius(290);
-        setContainerSize(750);
+        setRadius(320);
+        setContainerSize(800);
       } else if (width >= 1024) {
-        setRadius(270);
+        setRadius(280);
         setContainerSize(700);
       } else if (width >= 768) {
         setRadius(240);
@@ -28,8 +28,8 @@ export default function Services() {
         setRadius(200);
         setContainerSize(500);
       } else {
-        setRadius(150);
-        setContainerSize(380);
+        setRadius(160);
+        setContainerSize(400);
       }
     };
     
@@ -43,27 +43,27 @@ export default function Services() {
 
   const services = [
     { 
-      title: 'BACKEND', 
+      title: 'Backend', 
       icon: Server, 
       desc: 'Robust server-side architectures, APIs, and database management ensuring your applications are scalable, secure, and performant.' 
     },
     { 
-      title: 'FRONTEND', 
+      title: 'Frontend', 
       icon: Layout, 
       desc: 'Creating responsive, interactive, and visually stunning user interfaces using modern frameworks like React and Next.js.' 
     },
     { 
-      title: 'AI ENGINEERING', 
+      title: 'AI Engineering', 
       icon: Brain, 
       desc: 'Integrating cutting-edge artificial intelligence and machine learning models to automate processes and provide intelligent solutions.' 
     },
     { 
-      title: 'MOBILE DEV', 
+      title: 'Mobile Dev', 
       icon: Smartphone, 
       desc: 'Building native and cross-platform mobile applications for iOS and Android that deliver smooth performance and intuitive navigation.' 
     },
     { 
-      title: 'UI/UX DESIGN', 
+      title: 'UI/UX Design', 
       icon: PenTool, 
       desc: 'Crafting user-centered designs that blend aesthetics with functionality, ensuring your product is beautiful and easy to use.' 
     },
@@ -73,12 +73,16 @@ export default function Services() {
   const isOrbitPaused = isHoveringOrbit || activeService !== null;
 
   return (
-    <section id="services" className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-16 sm:py-24 px-4">
-      {/* CSS Keyframes */}
+    <section id="services" className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 md:px-16 py-24 md:py-32">
       <style>{`
         @keyframes orbit {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        /* This is the magic keyframe that keeps text perfectly horizontal */
+        @keyframes counterOrbit {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(-360deg); }
         }
         @keyframes flip {
           from { transform: rotateY(0deg); }
@@ -101,7 +105,7 @@ export default function Services() {
           
           {/* Center Content */}
           <motion.div 
-            className="text-center z-20 relative max-w-[200px] sm:max-w-xs pointer-events-none px-4"
+            className="text-center z-20 relative max-w-[240px] sm:max-w-sm pointer-events-none px-4"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
@@ -115,28 +119,28 @@ export default function Services() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div className="flex items-center justify-center gap-3 mb-3">
                   {(() => {
                     const Icon = services[displayService].icon;
-                    return <Icon className="w-5 h-5 sm:w-7 sm:h-7 text-pink-500" />;
+                    return <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500" />;
                   })()}
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-wide">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-wide">
                     {services[displayService].title}
                   </h2>
                 </div>
-                <p className="text-gray-300 text-[10px] sm:text-xs md:text-sm leading-relaxed">
+                <p className="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed">
                   {services[displayService].desc}
                 </p>
               </motion.div>
             ) : (
               <>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
                   <span className="text-white">What We </span>
                   <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                     Can Do
                   </span>
                 </h2>
-                <p className="text-gray-400 text-[10px] sm:text-xs md:text-sm leading-relaxed">
+                <p className="text-gray-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   We bridge the gap between complex ideas and digital reality. From initial concept 
                   and design to scalable backend architecture and cutting-edge AI integration.
                 </p>
@@ -144,7 +148,7 @@ export default function Services() {
             )}
           </motion.div>
 
-          {/* Orbiting Ring */}
+          {/* Orbiting Ring (Rotates Clockwise) */}
           <div
             style={{
               position: 'absolute',
@@ -175,42 +179,67 @@ export default function Services() {
                     transform: `translate(${x}px, ${y}px) translate(-50%, -50%)`,
                   }}
                 >
-                  <motion.div
-                    className="relative cursor-pointer"
-                    onClick={() => setActiveService(activeService === index ? null : index)}
-                    onHoverStart={() => setHoveredService(index)}
-                    onHoverEnd={() => setHoveredService(null)}
+                  {/* 
+                    Counter-Rotating Wrapper (Rotates Counter-Clockwise)
+                    This cancels out the parent's rotation, keeping the circle and text perfectly flat!
+                  */}
+                  <div
+                    className="flex flex-col items-center"
+                    style={{
+                      animationName: 'counterOrbit',
+                      animationDuration: '30s',
+                      animationTimingFunction: 'linear',
+                      animationIterationCount: 'infinite',
+                      animationPlayState: isOrbitPaused ? 'paused' : 'running',
+                    }}
                   >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transformStyle: 'preserve-3d',
-                        animationName: shouldStopFlip ? 'none' : 'flip',
-                        animationDuration: '4s',
-                        animationTimingFunction: 'linear',
-                        animationIterationCount: 'infinite',
-                        transform: shouldStopFlip ? 'rotateY(0deg)' : undefined,
-                        transition: shouldStopFlip ? 'transform 0.3s ease-out' : 'none',
-                      }}
+                    {/* 1. Flipping Circle Container */}
+                    <motion.div
+                      className="relative cursor-pointer mb-2"
+                      onClick={() => setActiveService(activeService === index ? null : index)}
+                      onHoverStart={() => setHoveredService(index)}
+                      onHoverEnd={() => setHoveredService(null)}
                     >
-                      <div className={`
-                        relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full flex items-center justify-center
-                        bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900
-                        border border-purple-400/30
-                        shadow-[
-                          0_10px_30px_rgba(168,85,247,0.3),
-                          inset_0_2px_10px_rgba(255,255,255,0.1)
-                        ]
-                        transition-all duration-300 hover:scale-110 hover:shadow-[0_15px_40px_rgba(236,72,153,0.5)]
-                        ${isActive ? 'scale-110 ring-4 ring-pink-500/30 shadow-[0_0_40px_rgba(236,72,153,0.6)]' : ''}
-                      `}>
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-40 pointer-events-none" />
-                        <Icon className="relative z-10 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white drop-shadow-md" strokeWidth={1.5} />
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transformStyle: 'preserve-3d',
+                          animationName: shouldStopFlip ? 'none' : 'flip',
+                          animationDuration: '4s',
+                          animationTimingFunction: 'linear',
+                          animationIterationCount: 'infinite',
+                          transform: shouldStopFlip ? 'rotateY(0deg)' : undefined,
+                          transition: shouldStopFlip ? 'transform 0.3s ease-out' : 'none',
+                        }}
+                      >
+                        <div className={`
+                          relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full flex items-center justify-center
+                          bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900
+                          border border-purple-400/30
+                          shadow-[
+                            0_10px_30px_rgba(168,85,247,0.3),
+                            inset_0_2px_10px_rgba(255,255,255,0.1)
+                          ]
+                          transition-all duration-300 hover:scale-110 hover:shadow-[0_15px_40px_rgba(236,72,153,0.5)]
+                          ${isActive ? 'scale-110 ring-4 ring-pink-500/30 shadow-[0_0_40px_rgba(236,72,153,0.6)]' : ''}
+                        `}>
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-40 pointer-events-none" />
+                          <Icon className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white drop-shadow-md" strokeWidth={1.5} />
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+
+                    {/* 2. Label Below Circle (Stays perfectly horizontal) */}
+                    <span className={`
+                      text-xs sm:text-sm font-semibold tracking-wide whitespace-nowrap
+                      transition-colors duration-300
+                      ${isActive ? 'text-pink-400' : 'text-gray-400'}
+                    `}>
+                      {service.title}
+                    </span>
+                  </div>
                 </div>
               );
             })}
