@@ -113,7 +113,12 @@ export default function Projects() {
   if (!isMounted) return null;
 
   return (
-    <section id="projects" className="relative min-h-screen bg-[#0a0a0a] py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center overflow-hidden border-t border-zinc-900">
+    <section 
+      id="projects" 
+      // Removed bg-[#0a0a0a] and border-t border-zinc-900 to match Hero's transparent/inherited background
+      // Updated padding to match Hero's horizontal spacing (px-6 md:px-16)
+      className="relative min-h-screen py-16 sm:py-20 px-6 md:px-16 flex flex-col items-center overflow-hidden"
+    >
       <div className="relative z-10 flex flex-col items-center w-full">
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-12 sm:mb-20 text-center">What we have built</h2>
 
