@@ -1,6 +1,8 @@
 "use client";
 
+
 import React, { useState, useEffect, useRef } from 'react';
+
 
 interface Project {
   id: string;
@@ -11,6 +13,7 @@ interface Project {
   description: string;
 }
 
+
 export default function Projects() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -19,14 +22,17 @@ export default function Projects() {
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
 
   // Auto-scroll logic
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
+
 
     let requestId: number;
     const scroll = () => {
@@ -41,14 +47,17 @@ export default function Projects() {
       requestId = requestAnimationFrame(scroll);
     };
 
+
     requestId = requestAnimationFrame(scroll);
     return () => cancelAnimationFrame(requestId);
   }, [isPaused]);
+
 
   // Sync the active dash with manual swipes or auto-scroll
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container || window.innerWidth < 1024) return;
+
 
     const handleScroll = () => {
       let closestIndex = 0;
@@ -74,64 +83,68 @@ export default function Projects() {
       }
     };
 
+
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
   }, [activeIndex]);
 
+
   // Bulletproof click handler
   const handleDotClick = (index: number) => {
     setActiveIndex(index);
-    setIsPaused(true); // 1. Stop auto-scroll immediately so it doesn't fight the click
+    setIsPaused(true);
     
     setTimeout(() => {
       const card = cardRefs.current[index];
       if (card) {
         if (window.innerWidth >= 1024) {
-          // 2. Native browser centering (works perfectly with the scroll-px padding below)
           card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         } else {
-          // Mobile: scroll vertically to the card
           card.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
         }
       }
     }, 50);
 
-    // 3. Resume auto-scroll after the glide is finished
+
     setTimeout(() => {
       setIsPaused(false);
     }, 1500);
   };
 
+
   const projects: Project[] = [
     { id: 'p1', number: '01', logoSrc: '/servia.png', videoSrc: '/videos/video1.mp4', title: 'SERVIA', description: 'Servia AI is an all-in-one recruitment platform that accelerates hiring through intelligent CV parsing, automated scheduling, and data-driven candidate ranking to provide an efficient experience for both recruiters and talent.' },
     { id: 'p2', number: '02', logoSrc: '/afrinest.png', videoSrc: '/videos/video2.mp4', title: 'AFRINEST GLOBAL', description: 'Empowering Africans and the diaspora through real estate education and verified professional networks, serving as a trusted global bridge to build generational wealth.' },
-    { id: 'p3', number: '03', logoSrc: '/chisitra.png', videoSrc: '/videos/video3.mp4', title: 'EAVI', description: ' EAVI a comprehensive Learning Management System (LMS) designed to bridge the gap between instructors and learners.' },
+    { id: 'p3', number: '03', logoSrc: '/chisitra.png', videoSrc: '/videos/video3.mp4', title: 'EAVI', description: 'EAVI a comprehensive Learning Management System (LMS) designed to bridge the gap between instructors and learners.' },
     { id: 'p4', number: '04', logoSrc: '/Bet.jpeg', videoSrc: '/videos/video4.mp4', title: 'BetAman', description: 'BetAman ("Home Trust") uses AI-powered scam detection, Solana escrow, and on-chain reputation to stop rental fraud in Ethiopia.' },
     { id: 'p5', number: '05', logoSrc: '/well.jpeg', videoSrc: '/videos/video5.mp4', title: 'RoamWell AI', description: 'RoamWell is an AI-powered interactive health map for Ethiopia that delivers personalized, region-specific wellness guidance and real-time health alerts to keep users safe anywhere in the country.' },
   ];
 
+
   if (!isMounted) return null;
+
 
   return (
     <section 
       id="projects" 
-      // Removed bg-[#0a0a0a] and border-t border-zinc-900 to match Hero's transparent/inherited background
-      // Updated padding to match Hero's horizontal spacing (px-6 md:px-16)
       className="relative min-h-screen py-16 sm:py-20 px-6 md:px-16 flex flex-col items-center overflow-hidden"
     >
-      <div className="relative z-10 flex flex-col items-center w-full">
-        <h2 className="text-3xl sm:text-4xl font-bold text-white mb-12 sm:mb-20 text-center">What we have built</h2>
+      <div className="relative z-10 flex flex-col items-center lg:items-start w-full max-w-7xl mx-auto">
+        
+        {/* Heading: "What we" is white, "have built" gets the gradient */}
+        <h2 className="text-3xl sm:text-4xl font-bold mb-12 sm:mb-20 text-center lg:text-left">
+          <span className="text-white">What we </span>
+          <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            have built
+          </span>
+        </h2>
 
-        {/* 
-          lg:scroll-px-[calc(50vw-175px)] is the magic key: 
-          It adds invisible padding to the edges so the 1st and last cards 
-          can physically reach the exact center of the screen.
-        */}
+
         <div
           ref={scrollContainerRef}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="flex flex-col lg:grid lg:grid-flow-col lg:auto-cols-[300px] xl:auto-cols-[350px] gap-6 w-full max-w-7xl lg:overflow-x-auto pb-10 hide-scrollbar lg:scroll-px-[calc(50vw-175px)]"
+          className="flex flex-col lg:grid lg:grid-flow-col lg:auto-cols-[300px] xl:auto-cols-[350px] gap-6 w-full lg:overflow-x-auto pb-10 hide-scrollbar lg:scroll-px-[calc(50vw-175px)]"
         >
           {projects.map((project, index) => (
             <div
@@ -177,15 +190,18 @@ export default function Projects() {
                   className="absolute top-[28%] md:top-[29%] lg:top-[30%] left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 object-contain transition-all duration-700 ease-in-out group-hover:top-4 group-hover:left-4 group-hover:translate-x-0 group-hover:w-8 group-hover:h-8 z-10"
                 />
 
+
                 <p className="absolute top-[48%] md:top-[49%] lg:top-[50%] left-1/2 -translate-x-1/2 w-full max-w-[260px] px-4 text-white font-bold text-lg sm:text-xl tracking-widest text-center transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:pointer-events-none z-10">
                   {project.title}
                 </p>
+
 
                 <div className="absolute top-[62%] md:top-[61%] lg:top-[60%] left-1/2 -translate-x-1/2 w-full max-w-[260px] text-center transition-all duration-700 ease-in-out group-hover:top-[350px] sm:group-hover:top-[380px] md:group-hover:top-[410px] lg:group-hover:top-[440px] z-10">
                   <p className="text-gray-400 text-xs sm:text-sm font-light leading-relaxed px-2">
                     {project.description}
                   </p>
                 </div>
+
 
                 <span className="absolute bottom-4 right-4 sm:right-6 text-pink-500/40 font-mono text-sm sm:text-base transition-opacity duration-500 group-hover:opacity-0 z-10">
                   {project.number}
@@ -195,8 +211,9 @@ export default function Projects() {
           ))}
         </div>
 
+
         {/* Pagination Dashes */}
-        <div className="flex items-center justify-center gap-3 mt-8 sm:mt-12">
+        <div className="flex items-center justify-center gap-3 mt-8 sm:mt-12 w-full">
           {projects.map((_, index) => (
             <button
               key={index}
@@ -219,3 +236,6 @@ export default function Projects() {
     </section>
   );
 }
+
+
+
