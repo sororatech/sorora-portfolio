@@ -14,28 +14,27 @@ export default function Services() {
   useEffect(() => {
     const updateSizes = () => {
       const width = window.innerWidth;
-      
-      if (width >= 1280) {
-        setRadius(320);
-        setContainerSize(800);
-      } else if (width >= 1024) {
-        setRadius(280);
-        setContainerSize(700);
-      } else if (width >= 768) {
-        setRadius(240);
-        setContainerSize(600);
-      } else if (width >= 640) {
-        setRadius(200);
-        setContainerSize(500);
-      } else {
-        setRadius(160);
-        setContainerSize(400);
-      }
+
+      // Circle sizes match the Tailwind classes below (w-20 / sm:w-24 / md:w-28 / lg:w-32)
+      let circle = 80;
+      let desired = 150;
+      if (width >= 1280) { circle = 128; desired = 320; }
+      else if (width >= 1024) { circle = 128; desired = 280; }
+      else if (width >= 768) { circle = 112; desired = 240; }
+      else if (width >= 640) { circle = 96; desired = 200; }
+
+      // Never let the orbit exceed the screen width:
+      // (half screen) - (half circle) - (space for labels & padding)
+      const maxRadius = width / 2 - circle / 2 - 28;
+      const safeRadius = Math.max(100, Math.min(desired, maxRadius));
+
+      setRadius(safeRadius);
+      setContainerSize(safeRadius * 2 + circle + 60);
     };
-    
+
     updateSizes();
     window.addEventListener('resize', updateSizes);
-    
+
     return () => {
       window.removeEventListener('resize', updateSizes);
     };
@@ -79,7 +78,6 @@ export default function Services() {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        /* This is the magic keyframe that keeps text perfectly horizontal */
         @keyframes counterOrbit {
           from { transform: rotate(0deg); }
           to { transform: rotate(-360deg); }
@@ -179,10 +177,7 @@ export default function Services() {
                     transform: `translate(${x}px, ${y}px) translate(-50%, -50%)`,
                   }}
                 >
-                  {/* 
-                    Counter-Rotating Wrapper (Rotates Counter-Clockwise)
-                    This cancels out the parent's rotation, keeping the circle and text perfectly flat!
-                  */}
+                  {/* Counter-Rotating Wrapper */}
                   <div
                     className="flex flex-col items-center"
                     style={{
@@ -193,10 +188,11 @@ export default function Services() {
                       animationPlayState: isOrbitPaused ? 'paused' : 'running',
                     }}
                   >
-                    {/* 1. Flipping Circle Container */}
+                    {/* Flipping Circle Container */}
                     <motion.div
                       className="relative cursor-pointer mb-2"
                       onClick={() => setActiveService(activeService === index ? null : index)}
+                      onTouchEnd={() => setActiveService(activeService === index ? null : index)}
                       onHoverStart={() => setHoveredService(index)}
                       onHoverEnd={() => setHoveredService(null)}
                     >
@@ -215,7 +211,7 @@ export default function Services() {
                         }}
                       >
                         <div className={`
-                          relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full flex items-center justify-center
+                          relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full flex items-center justify-center
                           bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900
                           border border-purple-400/30
                           shadow-[
@@ -226,12 +222,12 @@ export default function Services() {
                           ${isActive ? 'scale-110 ring-4 ring-pink-500/30 shadow-[0_0_40px_rgba(236,72,153,0.6)]' : ''}
                         `}>
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-40 pointer-events-none" />
-                          <Icon className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white drop-shadow-md" strokeWidth={1.5} />
+                          <Icon className="relative z-10 w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 text-white drop-shadow-md" strokeWidth={1.5} />
                         </div>
                       </div>
                     </motion.div>
 
-                    {/* 2. Label Below Circle (Stays perfectly horizontal) */}
+                    {/* Label Below Circle */}
                     <span className={`
                       text-xs sm:text-sm font-semibold tracking-wide whitespace-nowrap
                       transition-colors duration-300
