@@ -15,30 +15,19 @@ export default function Services() {
     const updateSizes = () => {
       const width = window.innerWidth;
 
-      // Account for section padding (px-6 -> 48px total) and a little extra gutter
-      const horizontalPadding = 48 + 16;
-      const availableWidth = Math.max(320, width - horizontalPadding);
+      let circle = 64;
+      let desiredRadius = 140;
+      
+      if (width >= 1280) { circle = 128; desiredRadius = 320; }
+      else if (width >= 1024) { circle = 128; desiredRadius = 280; }
+      else if (width >= 768) { circle = 112; desiredRadius = 240; }
+      else if (width >= 640) { circle = 96; desiredRadius = 200; }
 
-      // Circle sizes match the Tailwind classes below (w-20 / sm:w-24 / md:w-28 / lg:w-32)
-      let circle = 80; // base (w-20)
-      let desired = 150;
-      if (width >= 1280) { circle = 128; desired = 320; }
-      else if (width >= 1024) { circle = 128; desired = 280; }
-      else if (width >= 768) { circle = 112; desired = 240; }
-      else if (width >= 640) { circle = 96; desired = 200; }
-
-      // Never let the orbit exceed the available width:
-      // (half available) - (half circle) - (space for labels & padding)
-      const maxRadius = availableWidth / 2 - circle / 2 - 28;
-
-      // Ensure the orbit has a reasonable minimum on very small screens
-      const safeRadius = Math.max(60, Math.min(desired, maxRadius));
-
-      // Container should never exceed the available width and should shrink gracefully
-      const computedContainer = Math.min(availableWidth, Math.round(safeRadius * 2 + circle + 40));
+      const maxRadius = (width / 2) - (circle / 2) - 50 - 20;
+      const safeRadius = Math.max(120, Math.min(desiredRadius, maxRadius));
 
       setRadius(safeRadius);
-      setContainerSize(computedContainer);
+      setContainerSize(safeRadius * 2 + circle + 80);
     };
 
     updateSizes();
@@ -81,7 +70,7 @@ export default function Services() {
   const isOrbitPaused = isHoveringOrbit || activeService !== null;
 
   return (
-    <section id="services" className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 md:px-16 py-24 md:py-32">
+    <section id="services" className="w-full flex flex-col items-center justify-center relative overflow-hidden overflow-x-hidden px-4 py-6 sm:py-8">
       <style>{`
         @keyframes orbit {
           from { transform: rotate(0deg); }
@@ -97,11 +86,11 @@ export default function Services() {
         }
       `}</style>
 
-      <div className="container mx-auto max-w-7xl relative z-10 flex flex-col items-center">
+      <div className="container mx-auto max-w-7xl relative z-10 flex flex-col items-center w-full">
         
         {/* Orbital Container */}
         <div 
-          className="relative flex items-center justify-center mx-auto w-full"
+          className="relative flex items-center justify-center mx-auto"
           style={{ width: `${containerSize}px`, height: `${containerSize}px`, maxWidth: '100%' }}
           onMouseEnter={() => setIsHoveringOrbit(true)}
           onMouseLeave={() => {
@@ -110,50 +99,52 @@ export default function Services() {
           }}
         >
           
-          {/* Center Content */}
-          <motion.div 
-            className="text-center z-20 relative max-w-[240px] sm:max-w-sm pointer-events-none px-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            {displayService !== null ? (
-              <motion.div
-                key={displayService}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  {(() => {
-                    const Icon = services[displayService].icon;
-                    return <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500" />;
-                  })()}
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-wide">
-                    {services[displayService].title}
+          {/* Center Content - Properly centered with constrained width */}
+          <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+            <motion.div 
+              className="text-center px-2"
+              style={{ maxWidth: '160px' }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              {displayService !== null ? (
+                <motion.div
+                  key={displayService}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                    {(() => {
+                      const Icon = services[displayService].icon;
+                      return <Icon className="w-4 h-4 sm:w-6 sm:h-6 text-pink-500 shrink-0" />;
+                    })()}
+                    <h2 className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wide leading-tight">
+                      {services[displayService].title}
+                    </h2>
+                  </div>
+                  <p className="text-gray-300 text-[9px] sm:text-[11px] md:text-xs leading-snug">
+                    {services[displayService].desc}
+                  </p>
+                </motion.div>
+              ) : (
+                <>
+                  <h2 className="text-sm sm:text-base md:text-lg font-bold mb-1.5 leading-tight">
+                    <span className="text-white">What We </span>
+                    <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      Can Do
+                    </span>
                   </h2>
-                </div>
-                <p className="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed">
-                  {services[displayService].desc}
-                </p>
-              </motion.div>
-            ) : (
-              <>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
-                  <span className="text-white">What We </span>
-                  <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    Can Do
-                  </span>
-                </h2>
-                <p className="text-gray-400 text-xs sm:text-sm md:text-base leading-relaxed">
-                  We bridge the gap between complex ideas and digital reality. From initial concept 
-                  and design to scalable backend architecture and cutting-edge AI integration.
-                </p>
-              </>
-            )}
-          </motion.div>
+                  <p className="text-gray-400 text-[9px] sm:text-[11px] md:text-xs leading-snug">
+                    We bridge the gap between complex ideas and digital reality.
+                  </p>
+                </>
+              )}
+            </motion.div>
+          </div>
 
           {/* Orbiting Ring (Rotates Clockwise) */}
           <div
@@ -199,7 +190,7 @@ export default function Services() {
                   >
                     {/* Flipping Circle Container */}
                     <motion.div
-                      className="relative cursor-pointer mb-2"
+                      className="relative cursor-pointer mb-1 sm:mb-2"
                       onClick={() => setActiveService(activeService === index ? null : index)}
                       onTouchEnd={() => setActiveService(activeService === index ? null : index)}
                       onHoverStart={() => setHoveredService(index)}
@@ -220,7 +211,7 @@ export default function Services() {
                         }}
                       >
                         <div className={`
-                          relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full flex items-center justify-center
+                          relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center
                           bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900
                           border border-purple-400/30
                           shadow-[
@@ -228,17 +219,17 @@ export default function Services() {
                             inset_0_2px_10px_rgba(255,255,255,0.1)
                           ]
                           transition-all duration-300 hover:scale-110 hover:shadow-[0_15px_40px_rgba(236,72,153,0.5)]
-                          ${isActive ? 'scale-110 ring-4 ring-pink-500/30 shadow-[0_0_40px_rgba(236,72,153,0.6)]' : ''}
+                          ${isActive ? 'scale-110 ring-2 sm:ring-4 ring-pink-500/30 shadow-[0_0_40px_rgba(236,72,153,0.6)]' : ''}
                         `}>
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-40 pointer-events-none" />
-                          <Icon className="relative z-10 w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 text-white drop-shadow-md" strokeWidth={1.5} />
+                          <Icon className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 text-white drop-shadow-md" strokeWidth={1.5} />
                         </div>
                       </div>
                     </motion.div>
 
                     {/* Label Below Circle */}
                     <span className={`
-                      text-xs sm:text-sm font-semibold tracking-wide whitespace-nowrap
+                      text-[10px] sm:text-sm font-semibold tracking-wide whitespace-nowrap
                       transition-colors duration-300
                       ${isActive ? 'text-pink-400' : 'text-gray-400'}
                     `}>
