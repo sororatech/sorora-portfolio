@@ -15,21 +15,30 @@ export default function Services() {
     const updateSizes = () => {
       const width = window.innerWidth;
 
+      // Account for section padding (px-6 -> 48px total) and a little extra gutter
+      const horizontalPadding = 48 + 16;
+      const availableWidth = Math.max(320, width - horizontalPadding);
+
       // Circle sizes match the Tailwind classes below (w-20 / sm:w-24 / md:w-28 / lg:w-32)
-      let circle = 80;
+      let circle = 80; // base (w-20)
       let desired = 150;
       if (width >= 1280) { circle = 128; desired = 320; }
       else if (width >= 1024) { circle = 128; desired = 280; }
       else if (width >= 768) { circle = 112; desired = 240; }
       else if (width >= 640) { circle = 96; desired = 200; }
 
-      // Never let the orbit exceed the screen width:
-      // (half screen) - (half circle) - (space for labels & padding)
-      const maxRadius = width / 2 - circle / 2 - 28;
-      const safeRadius = Math.max(100, Math.min(desired, maxRadius));
+      // Never let the orbit exceed the available width:
+      // (half available) - (half circle) - (space for labels & padding)
+      const maxRadius = availableWidth / 2 - circle / 2 - 28;
+
+      // Ensure the orbit has a reasonable minimum on very small screens
+      const safeRadius = Math.max(60, Math.min(desired, maxRadius));
+
+      // Container should never exceed the available width and should shrink gracefully
+      const computedContainer = Math.min(availableWidth, Math.round(safeRadius * 2 + circle + 40));
 
       setRadius(safeRadius);
-      setContainerSize(safeRadius * 2 + circle + 60);
+      setContainerSize(computedContainer);
     };
 
     updateSizes();
@@ -92,8 +101,8 @@ export default function Services() {
         
         {/* Orbital Container */}
         <div 
-          className="relative flex items-center justify-center mx-auto"
-          style={{ width: `${containerSize}px`, height: `${containerSize}px` }}
+          className="relative flex items-center justify-center mx-auto w-full"
+          style={{ width: `${containerSize}px`, height: `${containerSize}px`, maxWidth: '100%' }}
           onMouseEnter={() => setIsHoveringOrbit(true)}
           onMouseLeave={() => {
             setIsHoveringOrbit(false);
